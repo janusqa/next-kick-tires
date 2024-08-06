@@ -1,12 +1,12 @@
 ### Quickstart
-- npx create-next-app@latest
+- $ npx create-next-app@latest
   - Typescript:yes
   - ESLint: yes
   - Tailwind CSS: yes
   - src/ directory: no
   - App Router: yes
   - import alias: no
-- npx shadcn-ui@latest init
+- $ npx shadcn-ui@latest init
   - Style: Default
   - base color: Slate
   - css variables for colors: yes
