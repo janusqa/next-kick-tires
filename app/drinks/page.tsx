@@ -9,9 +9,7 @@ const DrinksPage = async () => {
 
         const response = await fetch(url);
 
-        if (!response.ok) {
-            throw new Error('Failed to fetch drinks');
-        }
+        if (!response.ok) throw new Error('Failed to fetch drinks');
 
         const data = await response.json();
 
