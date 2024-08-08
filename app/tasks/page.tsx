@@ -1,10 +1,13 @@
 import React from 'react';
+import TaskCreateForm from '../_components/TaskCreateForm';
+import TaskList from '../_components/TaskList';
 
 const TasksPage = () => {
     return (
-        <>
-            <h1 className="text-7xl">Tasks page</h1>
-        </>
+        <section className="max-w-lg">
+            <TaskCreateForm />
+            <TaskList />
+        </section>
     );
 };
 
