@@ -1,5 +1,10 @@
-import React from 'react';
+'use client';
+
+import React, { useEffect } from 'react';
 import { createTask } from '@/utils/actions';
+import FormSubmitButton from './FormSubmitButton';
+import { useFormState } from 'react-dom';
+import toast from 'react-hot-toast';
 
 /** rules for server actions
  * 1. must be async component
@@ -20,9 +25,31 @@ import { createTask } from '@/utils/actions';
 //     }
 // };
 
+const initialState: { message: string | null } = {
+    message: null,
+};
+
 const TaskCreateForm = () => {
+    // we now need to do some error checking so we will do this via useFormAction
+    // useFormaction will track the state of the form submission
+    // We will use it to display feedback to user as the state changes
+    // This neccesitates this component to be a RCC
+    const [state, formAction] = useFormState(createTask, initialState);
+
+    useEffect(
+        function () {
+            if (state.message === 'success') {
+                toast.success('Success!');
+            } else {
+                toast.error(state.message);
+            }
+        },
+        [state]
+    );
+
     return (
-        <form action={createTask}>
+        <form action={formAction}>
+            {state.message ? <p className="mb-2">{state.message}</p> : null}
             <div className="join w-full">
                 <input
                     type="text"
@@ -31,9 +58,10 @@ const TaskCreateForm = () => {
                     name="content"
                     required
                 />
-                <button type="submit" className="btn btn-primary join-item">
-                    Create task
-                </button>
+                <FormSubmitButton
+                    label="Create Task"
+                    style="btn btn-primary join-item"
+                />
             </div>
         </form>
     );

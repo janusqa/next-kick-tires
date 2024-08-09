@@ -1,11 +1,12 @@
 import React from 'react';
 import { deleteTask } from '@/utils/actions';
+import FormSubmitButton from './FormSubmitButton';
 
 const TaskDeleteForm = ({ id }: { id: string }) => {
     return (
         <form action={deleteTask}>
             <input type="hidden" name="id" value={id} />
-            <button className="btn btn-xs btn-error">Delete</button>
+            <FormSubmitButton label="Delete" style="btn btn-xs btn-error" />
         </form>
     );
 };

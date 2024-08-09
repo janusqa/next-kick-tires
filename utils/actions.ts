@@ -10,6 +10,8 @@
 import { revalidatePath } from 'next/cache';
 import prisma from './db';
 import { redirect } from 'next/navigation';
+import getErrorMessage from './errorMessage';
+import { z, ZodError } from 'zod';
 
 export const getTasks = async () => {
     const tasks = await prisma.task.findMany({
@@ -21,17 +23,40 @@ export const getTasks = async () => {
     return tasks;
 };
 
-export const createTask = async (formData: FormData) => {
+// This was modified to be used with useFormState in client component
+// it now accepts a prevstate. This is to facilitate error checking in
+// server actions
+export const createTask = async (
+    prevState: { message: string | null },
+    formData: FormData
+) => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     const content = formData.get('content');
-    await prisma.task.create({
-        data: {
-            content: String(content),
-        },
+
+    const Task = z.object({
+        content: z.string().min(5),
     });
-    revalidatePath('/tasks');
+
+    try {
+        Task.parse({ content: content });
+        await prisma.task.create({
+            data: {
+                content: String(content),
+            },
+        });
+        revalidatePath('/tasks');
+        return { message: 'success' };
+    } catch (error: unknown) {
+        if (error instanceof ZodError)
+            return { message: getErrorMessage(error.errors[0]) };
+        return { message: getErrorMessage(error) };
+    }
 };
 
 export const deleteTask = async (formData: FormData) => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     const id = formData.get('id');
     await prisma.task.delete({
         where: {
